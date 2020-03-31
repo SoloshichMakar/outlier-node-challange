@@ -1,24 +1,24 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 
-const api = require('./api')
-const middleware = require('./middleware')
+const routes = require('./routes/routes')
 
-const PORT = process.env.PORT || 1337
+const port = process.env.PORT || 1337
 
 const app = express()
 
-app.use(bodyParser.json())
+module.exports = app
 
-app.get('/health', api.getHealth)
-
-app.use(middleware.handleError)
-app.use(middleware.notFound)
-
-const server = app.listen(PORT, () =>
-  console.log(`Server listening on port ${PORT}`)
+app.use(
+  bodyParser.urlencoded({
+    extended: true
+  })
 )
 
-if (require.main !== module) {
-  module.exports = server
-}
+app.use(bodyParser.json())
+
+app.use('/', routes)
+
+app.listen(port, function () {
+  console.log('Running Nodejs app on port ' + port)
+})
